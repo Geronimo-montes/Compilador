@@ -3,14 +3,15 @@
 #include<stdlib.h>
 #include<string.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 #define numPalRes 22
 #define numSimEspecial 20
 
 struct nodo {
-    char nombre[10];
-    char tipo[10];
-    char lexema[10];
+    char nombre[30];
+    char tipo[30];
+    char lexema[30];
 
     struct nodo *siguiente;
     struct nodo *anterior;
@@ -66,6 +67,15 @@ int main()
                 }
                 break;
 
+            case '!':
+                if (caracterAnterior == '\0'){
+                    caracterAnterior = aux[0];//Respaldamos el caracter leido
+                    if(strcmp(Token, "\0") != 0)
+                        if(!identidacadorPalRes(Token))
+                            identidacadorIdentificador(Token);
+                }
+                break;
+
             case '=':
                 if(strcmp(Token, "\0") != 0)
                         if(!identidacadorPalRes(Token))
@@ -73,6 +83,9 @@ int main()
 
                 if (caracterAnterior == ':'){
                     insertar(":=", "SimEsp", ":=");
+                    caracterAnterior = '\0';
+                }else if(caracterAnterior == '!'){
+                    insertar("!=", "SimEsp", "!=");
                     caracterAnterior = '\0';
                 }else{
                     insertar("=", "SimEsp", "=");
@@ -91,7 +104,11 @@ int main()
             //de un simEsp simple
             default:
                 if(caracterAnterior != '\0'){
-                    insertar(&caracterAnterior, "SimEsp", &caracterAnterior);
+                //Puede que el caracter almacenado nunca se use por lo que hay que verificar
+                    if(caracterAnterior != '!'){
+                    //el signo de exclamacion no es utilizado individualmente por lo que se descarta
+                        insertar(&caracterAnterior, "SimEsp", &caracterAnterior);
+                    }
                     caracterAnterior = '\0';
                 }
 
@@ -111,9 +128,7 @@ int main()
             }
 
             if(simbolo != ' ' && simbolo != '\n' && simbolo != '\t'){
-                if(isalpha(simbolo)){
-                    strncat(Token, aux,1);//Concatenamos
-                }else if (isdigit(simbolo)){
+                if(isalpha(simbolo) || isdigit(simbolo) || simbolo == '_'){
                     strncat(Token, aux,1);//Concatenamos
                 }
             }
@@ -122,7 +137,7 @@ int main()
 
     fclose(archivo);
 
-    printf("Nombre\tTipo\tLexema\n\n");
+    printf("  Nombre\t\tTipo\tLexema\n\n");
     imprimirPre(raiz);
 
     borrar(raiz);
@@ -150,9 +165,7 @@ bool identidacadorIdentificador(char data[]){
     }
 
     while(data[i]){
-        //printf("ID-Data => %c\n", data[i]);
-
-        if(isalpha(data[i]) || isdigit(&data[i])){
+        if(isalpha(data[i]) || isdigit(data[i]) || data[i] == '_'){
             valido = true;
         }else{
             valido = false;
@@ -168,6 +181,8 @@ bool identidacadorIdentificador(char data[]){
     }
     return false;
 }
+
+
 
 void insertar(char  nombre[], char tipo[], char lexema[]){
     struct nodo *nuevo = NULL, *nAux = raiz;
@@ -193,9 +208,10 @@ void insertar(char  nombre[], char tipo[], char lexema[]){
 void imprimirPre(struct nodo *reco){
     while (reco != NULL)
     {
-        printf("%s\t",reco->nombre);
+        printf("  %s",reco->nombre);
+        for(int i = strlen(reco->nombre); i < 22; i++) { printf(" "); }
         printf("%s\t",reco->tipo);
-        printf("%s\n\n",reco->lexema);
+        printf("%s\n",reco->lexema);
         reco = reco->siguiente;
     }
 }
