@@ -8,7 +8,8 @@
 #define numPalRes 22
 #define numSimEspecial 20
 
-struct nodo {
+struct nodo
+{
     char nombre[30];
     char tipo[30];
     char lexema[30];
@@ -22,11 +23,13 @@ char Token[] = "\0";
 char caracterAnterior;
 
 char palRes[numPalRes][10] = {"inicio", "fin", "var", "const", "si", "entonces", "iniciosi", "finsi",
-    "sino", "iniciosino", "finsino", "para", "iniciopara", "finpara", "escribir", "leer",
-    "entero", "real", "booleano", "cadena" };
+                              "sino", "iniciosino", "finsino", "para", "iniciopara", "finpara", "escribir", "leer",
+                              "entero", "real", "booleano", "cadena"
+                             };
 
 char simEspecial[numSimEspecial][3] = {"+", "-", "*", "/", "<", ">", "=", "&", "|", ";", ":", "(", ")",
-    ">=", "<=", "!=", ":="};
+                                       ">=", "<=", "!=", ":="
+                                      };
 
 //Funciones
 bool identidacadorPalRes(char data[]);
@@ -56,10 +59,12 @@ int main()
             strncat(aux, &caracter, 1);
 
             //Primero identificamos los simbolos especiales
-            switch(simbolo){
+            switch(simbolo)
+            {
             //Casos especificos para los simbolos complejos
             case ':':
-                if (caracterAnterior == '\0'){
+                if (caracterAnterior == '\0')
+                {
                     caracterAnterior = aux[0];//Respaldamos el caracter leido
                     if(strcmp(Token, "\0") != 0)
                         if(!identidacadorPalRes(Token))
@@ -68,7 +73,8 @@ int main()
                 break;
 
             case '!':
-                if (caracterAnterior == '\0'){
+                if (caracterAnterior == '\0')
+                {
                     caracterAnterior = aux[0];//Respaldamos el caracter leido
                     if(strcmp(Token, "\0") != 0)
                         if(!identidacadorPalRes(Token))
@@ -77,7 +83,8 @@ int main()
                 break;
 
             case '>':
-                if (caracterAnterior == '\0'){
+                if (caracterAnterior == '\0')
+                {
                     caracterAnterior = aux[0];//Respaldamos el caracter leido
                     if(strcmp(Token, "\0") != 0)
                         if(!identidacadorPalRes(Token))
@@ -86,7 +93,8 @@ int main()
                 break;
 
             case '<':
-                if (caracterAnterior == '\0'){
+                if (caracterAnterior == '\0')
+                {
                     caracterAnterior = aux[0];//Respaldamos el caracter leido
                     if(strcmp(Token, "\0") != 0)
                         if(!identidacadorPalRes(Token))
@@ -95,22 +103,31 @@ int main()
                 break;
             case '=':
                 if(strcmp(Token, "\0") != 0)
-                        if(!identidacadorPalRes(Token))
-                            identidacadorIdentificador(Token);
+                    if(!identidacadorPalRes(Token))
+                        identidacadorIdentificador(Token);
 
-                if (caracterAnterior == ':'){
+                if (caracterAnterior == ':')
+                {
                     insertar(":=", "SimEsp", ":=");
                     caracterAnterior = '\0';
-                }else if(caracterAnterior == '!'){
+                }
+                else if(caracterAnterior == '!')
+                {
                     insertar("!=", "SimEsp", "!=");
                     caracterAnterior = '\0';
-                }else if(caracterAnterior == '>'){
+                }
+                else if(caracterAnterior == '>')
+                {
                     insertar(">=", "SimEsp", ">=");
                     caracterAnterior = '\0';
-                }else if(caracterAnterior == '<'){
+                }
+                else if(caracterAnterior == '<')
+                {
                     insertar("<=", "SimEsp", "<=");
                     caracterAnterior = '\0';
-                }else{
+                }
+                else
+                {
                     insertar("=", "SimEsp", "=");
                 }
                 break;
@@ -126,22 +143,28 @@ int main()
             //En caso de no corresponder a nunguna opcion podemos asumir que se trata
             //de un simEsp simple
             default:
-                if(caracterAnterior != '\0'){
-                //Puede que el caracter almacenado nunca se use por lo que hay que verificar
-                    if(caracterAnterior != '!'){
-                    //el signo de exclamacion no es utilizado individualmente por lo que se descarta
+                if(caracterAnterior != '\0')
+                {
+                    //Puede que el caracter almacenado nunca se use por lo que hay que verificar
+                    if(caracterAnterior != '!')
+                    {
+                        //el signo de exclamacion no es utilizado individualmente por lo que se descarta
                         insertar(&caracterAnterior, "SimEsp", &caracterAnterior);
                     }
                     caracterAnterior = '\0';
                 }
 
-                for(int i = 0; i < numSimEspecial; i++){
-                    if(strcmp(aux, simEspecial[i]) == 0){
-                    //Al encontrar un ocurrencia insertamos el nodo y rompemos el ciclo
+                for(int i = 0; i < numSimEspecial; i++)
+                {
+                    if(strcmp(aux, simEspecial[i]) == 0)
+                    {
+                        //Al encontrar un ocurrencia insertamos el nodo y rompemos el ciclo
                         if(strcmp(Token, "\0") != 0)
                             if(!identidacadorPalRes(Token))
                                 identidacadorIdentificador(Token);
+                        //if(!identidacadorIdentificador(Token));
 
+                        //numeros(Token);
                         insertar(aux, "simEsp", aux);
                         break;
                     }
@@ -150,9 +173,12 @@ int main()
                 break;
             }
 
-            if(simbolo != ' ' && simbolo != '\n' && simbolo != '\t'){
-                if(isalpha(simbolo) || isdigit(simbolo) || simbolo == '_'){
+            if(simbolo != ' ' && simbolo != '\n' && simbolo != '\t')
+            {
+                if(isalpha(simbolo) || isdigit(simbolo) || simbolo == '_' || simbolo == '.')
+                {
                     strncat(Token, aux,1);//Concatenamos
+
                 }
             }
         }
@@ -168,9 +194,12 @@ int main()
     return 0;
 }
 
-bool identidacadorPalRes(char data[]){
-    for(int i = 0; i < numPalRes; i++){
-        if(strcmp(data, palRes[i]) == 0){
+bool identidacadorPalRes(char data[])
+{
+    for(int i = 0; i < numPalRes; i++)
+    {
+        if(strcmp(data, palRes[i]) == 0)
+        {
             insertar(data, "PalRes", data);
             strcpy(Token,  ""); //limpiamos la variable
             return true;
@@ -179,24 +208,59 @@ bool identidacadorPalRes(char data[]){
     return false;
 }
 
-bool identidacadorIdentificador(char data[]){
+void numeros(char data[])
+{
+
+    if(atoi(data) || atof(data))
+    {
+        insertar(data, "NUM", data);
+        strcpy(Token,  ""); //limpiamos la variable
+    }
+}
+bool identidacadorIdentificador(char data[])
+{
     bool valido = true;
     int i = 0;
 
-    if(strcmp(data, "") == 0 || isdigit(data[i])) {
-        valido = false;
-    }else{
-        while(data[i]){
-            if(isalpha(data[i]) || isdigit(data[i]) || data[i] == '_'){
-                valido = true;
-            }else{
-                valido = false;
-                break;
+        if(isalpha(data[0]) || data[0] == '_' )
+        {
+            while(data[i])
+            {
+                if(isalnum(data[i]) || data[i] == '_')
+                {
+                    valido = true;
+                }
+                else
+                {
+                    valido = false;
+                    insertar(data, "Cadena invalida", "Error");
+                    strcpy(Token,  ""); //limpiamos la variable
+                    break;
+                }
+                i++;
             }
-            i++;
         }
-    }
-    if(valido){
+        else if (isdigit(data[0]))
+        {
+            if(isdigit(data[1]) || data[1] == '.')
+            {
+                numeros(data);
+            }
+            else if(isalpha(data[1]))
+            {
+                valido = false;
+                insertar(data, "Cadena invalida", "Error");
+                strcpy(Token,  ""); //limpiamos la variable
+            }
+
+
+        }
+
+
+
+
+    if(valido)
+    {
         insertar(data, "Id", data);
         strcpy(Token,  ""); //limpiamos la variable
         return true;
@@ -206,7 +270,8 @@ bool identidacadorIdentificador(char data[]){
 
 
 
-void insertar(char  nombre[], char tipo[], char lexema[]){
+void insertar(char  nombre[], char tipo[], char lexema[])
+{
     struct nodo *nuevo = NULL, *nAux = raiz;
     nuevo = malloc(sizeof(struct nodo));
 
@@ -218,7 +283,8 @@ void insertar(char  nombre[], char tipo[], char lexema[]){
 
     if(raiz == NULL)
         raiz=nuevo;
-    else{
+    else
+    {
         while(nAux->siguiente != NULL)
             nAux = nAux->siguiente;
 
@@ -227,18 +293,23 @@ void insertar(char  nombre[], char tipo[], char lexema[]){
     }
 }
 
-void imprimirPre(struct nodo *reco){
+void imprimirPre(struct nodo *reco)
+{
     while (reco != NULL)
     {
         printf("  %s",reco->nombre);
-        for(int i = strlen(reco->nombre); i < 22; i++) { printf(" "); }
+        for(int i = strlen(reco->nombre); i < 22; i++)
+        {
+            printf(" ");
+        }
         printf("%s\t",reco->tipo);
         printf("%s\n",reco->lexema);
         reco = reco->siguiente;
     }
 }
 
-void borrar(struct nodo *reco){
+void borrar(struct nodo *reco)
+{
     if (reco != NULL)
     {
         borrar(reco->anterior);
