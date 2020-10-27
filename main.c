@@ -76,6 +76,23 @@ int main()
                 }
                 break;
 
+            case '>':
+                if (caracterAnterior == '\0'){
+                    caracterAnterior = aux[0];//Respaldamos el caracter leido
+                    if(strcmp(Token, "\0") != 0)
+                        if(!identidacadorPalRes(Token))
+                            identidacadorIdentificador(Token);
+                }
+                break;
+
+            case '<':
+                if (caracterAnterior == '\0'){
+                    caracterAnterior = aux[0];//Respaldamos el caracter leido
+                    if(strcmp(Token, "\0") != 0)
+                        if(!identidacadorPalRes(Token))
+                            identidacadorIdentificador(Token);
+                }
+                break;
             case '=':
                 if(strcmp(Token, "\0") != 0)
                         if(!identidacadorPalRes(Token))
@@ -86,6 +103,12 @@ int main()
                     caracterAnterior = '\0';
                 }else if(caracterAnterior == '!'){
                     insertar("!=", "SimEsp", "!=");
+                    caracterAnterior = '\0';
+                }else if(caracterAnterior == '>'){
+                    insertar(">=", "SimEsp", ">=");
+                    caracterAnterior = '\0';
+                }else if(caracterAnterior == '<'){
+                    insertar("<=", "SimEsp", "<=");
                     caracterAnterior = '\0';
                 }else{
                     insertar("=", "SimEsp", "=");
@@ -160,20 +183,19 @@ bool identidacadorIdentificador(char data[]){
     bool valido = true;
     int i = 0;
 
-    if(strcmp(data, "") == 0){
+    if(strcmp(data, "") == 0 || isdigit(data[i])) {
         valido = false;
-    }
-
-    while(data[i]){
-        if(isalpha(data[i]) || isdigit(data[i]) || data[i] == '_'){
-            valido = true;
-        }else{
-            valido = false;
-            break;
+    }else{
+        while(data[i]){
+            if(isalpha(data[i]) || isdigit(data[i]) || data[i] == '_'){
+                valido = true;
+            }else{
+                valido = false;
+                break;
+            }
+            i++;
         }
-        i++;
     }
-
     if(valido){
         insertar(data, "Id", data);
         strcpy(Token,  ""); //limpiamos la variable
