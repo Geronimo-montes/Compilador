@@ -4,6 +4,7 @@
 #include<string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <Windows.h>
 
 #define numPalRes 22
 #define numSimEspecial 20
@@ -27,9 +28,8 @@ char palRes[numPalRes][10] = {"inicio", "fin", "var", "const", "si", "entonces",
                               "entero", "real", "booleano", "cadena"
                              };
 
-char simEspecial[numSimEspecial][3] = {"+", "-", "*", "/", "<", ">", "=", "&", "|", ";", ":", "(", ")",
-                                       ">=", "<=", "!=", ":="
-                                      };
+char simEspecial[numSimEspecial][3] = { "+", "-", "*", "/", "<", ">", "=", "&", "|", ";", ":", "(", ")",
+                                       ">=", "<=", "!=", ":=" };
 
 //Funciones
 bool identidacadorPalRes(char data[]);
@@ -38,12 +38,19 @@ void insertar(char  nombre[], char tipo[], char lexema[]);
 void imprimirPre(struct nodo *reco);
 void borrar(struct nodo *reco);
 
+void Color(int Background, int Text){ // Función para cambiar el color del fondo y/o pantalla
+	HANDLE Console = GetStdHandle(STD_OUTPUT_HANDLE); // Tomamos la consola.
+	// Para cambiar el color, se utilizan números desde el 0 hasta el 255.
+	// Pero, para convertir los colores a un valor adecuado, se realiza el siguiente cálculo.
+	int New_Color= Text + (Background * 16);
+	SetConsoleTextAttribute(Console, New_Color); // Guardamos los cambios en la Consola.
+}
+
 int main()
 {
     //insertar("nombre_1", "tipo_1", "lexema_1");
     FILE *archivo;
     char caracter;
-
     archivo = fopen("programa.ng","r");
 
     if (archivo == NULL)
@@ -56,6 +63,7 @@ int main()
         {
             char simbolo = caracter;
             char aux[] = "";    //Da menos problemas que trabajar con caracter directamente
+            bool simboloRaro = true; //0: simbolo sospechoso; 1: es un simbolo especial
             strncat(aux, &caracter, 1);
 
             //Primero identificamos los simbolos especiales
@@ -69,6 +77,8 @@ int main()
                     if(strcmp(Token, "\0") != 0)
                         if(!identidacadorPalRes(Token))
                             identidacadorIdentificador(Token);
+
+                    simboloRaro = false;
                 }
                 break;
 
@@ -79,6 +89,8 @@ int main()
                     if(strcmp(Token, "\0") != 0)
                         if(!identidacadorPalRes(Token))
                             identidacadorIdentificador(Token);
+
+                    simboloRaro = false;
                 }
                 break;
 
@@ -89,6 +101,8 @@ int main()
                     if(strcmp(Token, "\0") != 0)
                         if(!identidacadorPalRes(Token))
                             identidacadorIdentificador(Token);
+
+                    simboloRaro = false;
                 }
                 break;
 
@@ -99,6 +113,8 @@ int main()
                     if(strcmp(Token, "\0") != 0)
                         if(!identidacadorPalRes(Token))
                             identidacadorIdentificador(Token);
+
+                    simboloRaro = false;
                 }
                 break;
             case '=':
@@ -130,6 +146,8 @@ int main()
                 {
                     insertar("=", "SimEsp", "=");
                 }
+
+                simboloRaro = false;
                 break;
             //Saltos de linea, tabulaciones y espacions son idicadores de insertar el
             //contenido de Token
@@ -166,6 +184,7 @@ int main()
 
                         //numeros(Token);
                         insertar(aux, "simEsp", aux);
+                        simboloRaro = false;
                         break;
                     }
                 }
@@ -175,7 +194,7 @@ int main()
 
             if(simbolo != ' ' && simbolo != '\n' && simbolo != '\t')
             {
-                if(isalpha(simbolo) || isdigit(simbolo) || simbolo == '_' || simbolo == '.')
+                if(isalpha(simbolo) || isdigit(simbolo) || simbolo == '_' || simbolo == '.' || simboloRaro)
                 {
                     strncat(Token, aux,1);//Concatenamos
 
@@ -186,7 +205,7 @@ int main()
 
     fclose(archivo);
 
-    printf("  Nombre\t\tTipo\tLexema\n\n");
+    printf("  Nombre\t\tTipo\t\tLexema\n\n");
     imprimirPre(raiz);
 
     borrar(raiz);
@@ -217,47 +236,44 @@ void numeros(char data[])
         strcpy(Token,  ""); //limpiamos la variable
     }
 }
+
 bool identidacadorIdentificador(char data[])
 {
     bool valido = true;
     int i = 0;
 
-        if(isalpha(data[0]) || data[0] == '_' )
+    if(isalpha(data[0]) || data[0] == '_' )
+    {
+        while(data[i])
         {
-            while(data[i])
+            if(isalnum(data[i]) || data[i] == '_')
             {
-                if(isalnum(data[i]) || data[i] == '_')
-                {
-                    valido = true;
-                }
-                else
-                {
-                    valido = false;
-                    insertar(data, "Cadena invalida", "Error");
-                    strcpy(Token,  ""); //limpiamos la variable
-                    break;
-                }
-                i++;
+                valido = true;
             }
-        }
-        else if (isdigit(data[0]))
-        {
-            if(isdigit(data[1]) || data[1] == '.')
-            {
-                numeros(data);
-            }
-            else if(isalpha(data[1]))
+            else
             {
                 valido = false;
-                insertar(data, "Cadena invalida", "Error");
+                insertar(data, "Error", "Cadena invalida");
                 strcpy(Token,  ""); //limpiamos la variable
+                break;
             }
-
-
+            i++;
         }
-
-
-
+    }
+    else if (isdigit(data[0]))
+    {
+        if(isdigit(data[1]) || data[1] == '.')
+        {
+            numeros(data);
+            valido = false;
+        }
+        else if(isalpha(data[1]))
+        {
+            valido = false;
+            insertar(data, "Error", "Cadena invalida");
+            strcpy(Token,  ""); //limpiamos la variable
+        }
+    }
 
     if(valido)
     {
@@ -265,10 +281,9 @@ bool identidacadorIdentificador(char data[])
         strcpy(Token,  ""); //limpiamos la variable
         return true;
     }
+
     return false;
 }
-
-
 
 void insertar(char  nombre[], char tipo[], char lexema[])
 {
@@ -297,14 +312,36 @@ void imprimirPre(struct nodo *reco)
 {
     while (reco != NULL)
     {
-        printf("  %s",reco->nombre);
-        for(int i = strlen(reco->nombre); i < 22; i++)
+        if(strcmp(reco->tipo, "Error") == 0)
         {
-            printf(" ");
+            Color(0,4);
+            printf("  %s",reco->nombre);
+            for(int i = strlen(reco->nombre); i < 22; i++)
+            {
+                printf(" ");
+            }
+            printf("%s",reco->tipo);
+            for(int i = strlen(reco->tipo); i < 14; i++)
+            {
+                printf(" ");
+            }
+            printf("%s\n",reco->lexema);
+            reco = reco->siguiente;
+        }else{
+            Color(0,15);
+            printf("  %s",reco->nombre);
+            for(int i = strlen(reco->nombre); i < 22; i++)
+            {
+                printf(" ");
+            }
+            printf("%s",reco->tipo);
+            for(int i = strlen(reco->tipo); i < 14; i++)
+            {
+                printf(" ");
+            }
+            printf("%s\n",reco->lexema);
+            reco = reco->siguiente;
         }
-        printf("%s\t",reco->tipo);
-        printf("%s\n",reco->lexema);
-        reco = reco->siguiente;
     }
 }
 
