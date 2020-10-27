@@ -1,9 +1,10 @@
 # depslib dependency file v1.0
-1603681738 source:c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\main.c
+1603766331 source:c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\main.c
 	<stdio.h>
 	<conio.h>
 	<stdlib.h>
 	<string.h>
+	<stdbool.h>
 
 1603667228 source:c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\listaenlazada.c
 	<stdio.h>

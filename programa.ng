@@ -1,5 +1,7 @@
 var
-    entero:;
+    entero:variable:=;
 const
 inicio
+    variable:=;
+    escribir();
 fin
