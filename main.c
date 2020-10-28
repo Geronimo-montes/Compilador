@@ -110,6 +110,7 @@ int main()
                 {
                     insertar(crearToken(cadena, Cadena, cadena, 0));
                     insertar(crearToken("\"", SimEsp, "\"", 0));
+                    strcpy(cadena,  "");    
                     auxCadena = false;
                 }
                 break;
