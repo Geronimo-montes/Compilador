@@ -1,32 +1,14 @@
-#include <stdio.h>
-#include <conio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-#include <ctype.h>
-#include <Windows.h>
-
-#include "EstructuraToken.h"
-#include "PalabraReservada.h"
-#include "Identificador.h"
-#include "Numeros.h"
-
+#include "main.h"
 #define numSimEspecial 20
 
 //Variables
 struct nodo *raiz = NULL;
 char cadena[] = "";
 char caracterAnterior;
+bool auxCadena; //Indica el inicio / fin de una constante tipo string
 
 char simEspecial[numSimEspecial][3] = { "+", "-", "*", "/", "<", ">", "=", "&", "|", ";", ":", "(", ")", ">=", "<=", "!=", ":=" };
-
-//Funciones
-struct Token crearToken(char nombre[], enum TipoToken tipo, char lexema[], int valor);
-void identificarTooken();
-void insertar(struct Token token);
-void imprimirPre(struct nodo *reco);
-void borrar(struct nodo *reco);
-void Color(int Background, int Text);
+char tipoToken[6][20] = {"PalRes", "Id", "Num", "SimEsp", "Cadena", "Error"};
 
 int main()
 {
@@ -38,7 +20,7 @@ int main()
     {
         printf("\nError de apertura del archivo. \n\n");
     }
-    else
+    else 
     {
         while((caracter = fgetc(archivo)) != EOF)
         {
@@ -55,7 +37,7 @@ int main()
                 if (caracterAnterior == '\0')
                 {
                     caracterAnterior = aux[0];//Respaldamos el caracter leido
-                    identificarTooken();
+                    identificarTooken(cadena);
                     simboloRaro = false;
                 }
                 break;
@@ -64,7 +46,7 @@ int main()
                 if (caracterAnterior == '\0')
                 {
                     caracterAnterior = aux[0];//Respaldamos el caracter leido
-                    identificarTooken();
+                    identificarTooken(cadena);
                     simboloRaro = false;
                 }
                 break;
@@ -73,7 +55,7 @@ int main()
                 if (caracterAnterior == '\0')
                 {
                     caracterAnterior = aux[0];//Respaldamos el caracter leido
-                    identificarTooken();
+                    identificarTooken(cadena);
                     simboloRaro = false;
                 }
                 break;
@@ -82,12 +64,12 @@ int main()
                 if (caracterAnterior == '\0')
                 {
                     caracterAnterior = aux[0];//Respaldamos el caracter leido
-                    identificarTooken();
+                    identificarTooken(cadena);
                     simboloRaro = false;
                 }
                 break;
             case '=':
-                identificarTooken();
+                identificarTooken(cadena);
 
                 if (caracterAnterior == ':')
                 {
@@ -116,12 +98,28 @@ int main()
 
                 simboloRaro = false;
                 break;
+            case '"':
+                if(cadena[0] == '\0')
+                {
+                    insertar(crearToken("\"", SimEsp, "\"", 0));
+                    auxCadena = true;
+                }
+                else if (cadena[0] != '\0')
+                {
+                    insertar(crearToken(cadena, Cadena, cadena, 0));
+                    insertar(crearToken("\"", SimEsp, "\"", 0));
+                    auxCadena = false;
+                }
+                break;
             //Saltos de linea, tabulaciones y espacions son idicadores de insertar el
             //contenido de cadena
             case '\n':
             case '\t':
             case ' ':
-                identificarTooken();
+                if(auxCadena == false)
+                {
+                    identificarTooken(cadena);
+                }
                 break;
             //En caso de no corresponder a nunguna opcion podemos asumir que se trata
             //de un simEsp simple
@@ -142,7 +140,7 @@ int main()
                     if(strcmp(aux, simEspecial[i]) == 0)
                     {
                         //Al encontrar un ocurrencia insertamos el nodo y rompemos el ciclo
-                        identificarTooken();
+                        identificarTooken(cadena);
                         insertar(crearToken(aux, SimEsp, aux, 0));
                         simboloRaro = false;
                         break;
@@ -152,75 +150,31 @@ int main()
                 break;
             }
 
-            if(simbolo != ' ' && simbolo != '\n' && simbolo != '\t')
+            if(simbolo != ' ' && simbolo != '\n' && simbolo != '\t' && simbolo != '"' && auxCadena == false)
             {
                 if(isalpha(simbolo) || isdigit(simbolo) || simbolo == '_' || simbolo == '.' || simboloRaro)
                 {
                     strncat(cadena, aux,1);//Concatenamos
                 }
             }
+            else if (auxCadena == true && simbolo != '"')
+            {
+
+                strncat(cadena, aux,1);//Concatenamos
+
+            }
         }
     }
 
     //al terminar de leer el docuemnto puede que token tenga un valor guardado
-    identificarTooken();
+    identificarTooken(cadena);
 
     fclose(archivo);
     printf("  Nombre\t\tTipo\t\tLexema\t\tValor\n\n");
     imprimirPre(raiz);
     borrar(raiz);
-    getch();
+        getch();
     return 0;
-}
-
-
-struct Token crearToken(char nombre[], enum TipoToken tipo, char lexema[], int valor){
-    struct Token *nuevoToken = NULL;
-    nuevoToken = malloc(sizeof(struct Token));
-
-    strcpy(nuevoToken->nombre, nombre);
-    nuevoToken->tipo = tipo;
-    strcpy(nuevoToken->lexema, lexema);
-    nuevoToken->valor = valor;
-
-    return *nuevoToken;
-}
-
-/* Sirve para no repetir el mismo fracmento de codigo
- * ademas de que lo vuelve versatil a los cambios*/
-void identificarTooken(){
-    if(strcmp(cadena, "\0") != 0)
-    {
-        if(identidacadorPalRes(cadena))
-        {//La cadena analizada es una palRes
-            insertar(crearToken(cadena, PalRes, cadena, 0));
-            strcpy(cadena,  "");
-        }else{
-            switch (numeros(cadena))
-            {
-            case 1://Numero Valido
-                insertar(crearToken(cadena, Num, cadena, atoi(cadena)));
-                strcpy(cadena,  "");
-                break;
-
-            case 2://Error lexico
-                insertar(crearToken(cadena, Error, "Error Lexico. Numero no Valido.", atoi(cadena)));
-                strcpy(cadena,  "");
-                break;
-
-            case 3:
-                if(identidacadorIdentificador(cadena))
-                {//La cadena es un identificador valido
-                    insertar(crearToken(cadena, Id, cadena, 0));
-                    strcpy(cadena,  "");
-                }else{//Error lexico en el identidicador
-                    insertar(crearToken(cadena, Error, "Error Lexico. Identidicador no Valido.", 0));
-                    strcpy(cadena,  "");
-                }
-                break;
-            }
-        }
-    }
 }
 
 void insertar(struct Token token)
@@ -255,9 +209,9 @@ void imprimirPre(struct nodo *reco)
         printf("  %s", reco->token.nombre);
         for(int i = strlen(reco->token.nombre); i < 22; i++){ printf(" "); }
         printf("%s", tipoToken[reco->token.tipo]);
-        for(int i = strlen(tipoToken[reco->token.tipo]); i < 14; i++){ printf(" "); }
+        for(int i = strlen(tipoToken[reco->token.tipo]); i < 16; i++){ printf(" "); }
         printf("%s", reco->token.lexema);
-        for(int i = strlen(reco->token.lexema); i < 14; i++){ printf(" "); }
+        for(int i = strlen(reco->token.lexema); i < 16; i++){ printf(" "); }
         printf("%d\n", reco->token.valor);
         reco = reco->siguiente;
     }
