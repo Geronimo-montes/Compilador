@@ -22,7 +22,7 @@ int main()
     {
         printf("\nError de apertura del archivo. \n\n");
     }
-    else 
+    else
     {
         while((caracter = fgetc(archivo)) != EOF)
         {
@@ -126,20 +126,6 @@ int main()
                 break;
             //En caso de no corresponder a nunguna opcion podemos asumir que se trata
             //de un simEsp simple
-            case '"':
-                if(cadena[0] == '\0')
-                {
-                    insertar(crearToken("\"", SimEsp, "\"", 0));
-                    auxCadena = true;
-                }
-                else if (cadena[0] != '\0')
-                {
-                    insertar(crearToken(cadena, Cadena, cadena, 0));
-                    insertar(crearToken("\"", SimEsp, "\"", 0));
-                    strcpy(cadena,  "");
-                    auxCadena = false;
-                }
-                break;
             default:
                 if(caracterAnterior != '\0')
                 {
