@@ -17,8 +17,8 @@
 struct nodo *raiz = NULL;
 char cadena[] = "";
 char caracterAnterior;
-
-char simEspecial[numSimEspecial][3] = { "+", "-", "*", "/", "<", ">", "=", "&", "|", ";", ":", "(", ")", ">=", "<=", "!=", ":=" };
+bool auxCadena;
+char simEspecial[numSimEspecial][3] = { "+", "-", "*", "/", "<", ">", "=", "&", "|", ";", ":", "(", ")", ">=", "<=", "!=", ":=","\"" };
 
 //Funciones
 struct Token crearToken(char nombre[], enum TipoToken tipo, char lexema[], int valor);
@@ -121,10 +121,28 @@ int main()
             case '\n':
             case '\t':
             case ' ':
-                identificarTooken();
+                if(auxCadena == false)
+                {
+                    identificarTooken();
+                }
+
                 break;
             //En caso de no corresponder a nunguna opcion podemos asumir que se trata
             //de un simEsp simple
+            case '"':
+                if(cadena[0] == '\0')
+                {
+                    insertar(crearToken("\"", SimEsp, "\"", 0));
+                    auxCadena = true;
+                }
+                else if (cadena[0] != '\0')
+                {
+                    insertar(crearToken(cadena, Cadena, cadena, 0));
+                    insertar(crearToken("\"", SimEsp, "\"", 0));
+                    strcpy(cadena,  "");
+                    auxCadena = false;
+                }
+                break;
             default:
                 if(caracterAnterior != '\0')
                 {
@@ -152,12 +170,18 @@ int main()
                 break;
             }
 
-            if(simbolo != ' ' && simbolo != '\n' && simbolo != '\t')
+            if(simbolo != ' ' && simbolo != '\n' && simbolo != '\t' && simbolo != '"' && auxCadena == false)
             {
                 if(isalpha(simbolo) || isdigit(simbolo) || simbolo == '_' || simbolo == '.' || simboloRaro)
                 {
                     strncat(cadena, aux,1);//Concatenamos
                 }
+            }
+            else if (auxCadena == true && simbolo != '"')
+            {
+
+                strncat(cadena, aux,1);//Concatenamos
+
             }
         }
     }
@@ -174,7 +198,8 @@ int main()
 }
 
 
-struct Token crearToken(char nombre[], enum TipoToken tipo, char lexema[], int valor){
+struct Token crearToken(char nombre[], enum TipoToken tipo, char lexema[], int valor)
+{
     struct Token *nuevoToken = NULL;
     nuevoToken = malloc(sizeof(struct Token));
 
@@ -188,14 +213,21 @@ struct Token crearToken(char nombre[], enum TipoToken tipo, char lexema[], int v
 
 /* Sirve para no repetir el mismo fracmento de codigo
  * ademas de que lo vuelve versatil a los cambios*/
-void identificarTooken(){
+void identificarTooken()
+{
+
+
+
     if(strcmp(cadena, "\0") != 0)
     {
         if(identidacadorPalRes(cadena))
-        {//La cadena analizada es una palRes
+        {
+            //La cadena analizada es una palRes
             insertar(crearToken(cadena, PalRes, cadena, 0));
             strcpy(cadena,  "");
-        }else{
+        }
+        else
+        {
             switch (numeros(cadena))
             {
             case 1://Numero Valido
@@ -210,10 +242,13 @@ void identificarTooken(){
 
             case 3:
                 if(identidacadorIdentificador(cadena))
-                {//La cadena es un identificador valido
+                {
+                    //La cadena es un identificador valido
                     insertar(crearToken(cadena, Id, cadena, 0));
                     strcpy(cadena,  "");
-                }else{//Error lexico en el identidicador
+                }
+                else  //Error lexico en el identidicador
+                {
                     insertar(crearToken(cadena, Error, "Error Lexico. Identidicador no Valido.", 0));
                     strcpy(cadena,  "");
                 }
@@ -221,6 +256,8 @@ void identificarTooken(){
             }
         }
     }
+
+
 }
 
 void insertar(struct Token token)
@@ -234,7 +271,8 @@ void insertar(struct Token token)
 
     if(raiz == NULL)
         raiz=nuevo;
-    else{
+    else
+    {
         while(nAux->siguiente != NULL)
             nAux = nAux->siguiente;
 
@@ -253,11 +291,20 @@ void imprimirPre(struct nodo *reco)
             Color(0,15);
 
         printf("  %s", reco->token.nombre);
-        for(int i = strlen(reco->token.nombre); i < 22; i++){ printf(" "); }
+        for(int i = strlen(reco->token.nombre); i < 22; i++)
+        {
+            printf(" ");
+        }
         printf("%s", tipoToken[reco->token.tipo]);
-        for(int i = strlen(tipoToken[reco->token.tipo]); i < 14; i++){ printf(" "); }
+        for(int i = strlen(tipoToken[reco->token.tipo]); i < 14; i++)
+        {
+            printf(" ");
+        }
         printf("%s", reco->token.lexema);
-        for(int i = strlen(reco->token.lexema); i < 14; i++){ printf(" "); }
+        for(int i = strlen(reco->token.lexema); i < 14; i++)
+        {
+            printf(" ");
+        }
         printf("%d\n", reco->token.valor);
         reco = reco->siguiente;
     }
@@ -273,8 +320,9 @@ void borrar(struct nodo *reco)
     }
 }
 
-void Color(int Background, int Text){ // Función para cambiar el color del fondo y/o pantalla
-	HANDLE Console = GetStdHandle(STD_OUTPUT_HANDLE); // Tomamos la consola.
-	int New_Color= Text + (Background * 16); // Pero, para convertir los colores a un valor adecuado, se realiza el siguiente cálculo.
-	SetConsoleTextAttribute(Console, New_Color); // Guardamos los cambios en la Consola.
+void Color(int Background, int Text)  // Función para cambiar el color del fondo y/o pantalla
+{
+    HANDLE Console = GetStdHandle(STD_OUTPUT_HANDLE); // Tomamos la consola.
+    int New_Color= Text + (Background * 16); // Pero, para convertir los colores a un valor adecuado, se realiza el siguiente cálculo.
+    SetConsoleTextAttribute(Console, New_Color); // Guardamos los cambios en la Consola.
 }
