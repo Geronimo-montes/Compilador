@@ -5,10 +5,12 @@
 struct nodo *raiz = NULL;
 char cadena[] = "";
 char caracterAnterior;
+
 bool auxCadena; //Indica el inicio / fin de una constante tipo string
 
 char simEspecial[numSimEspecial][3] = { "+", "-", "*", "/", "<", ">", "=", "&", "|", ";", ":", "(", ")", ">=", "<=", "!=", ":=" };
 char tipoToken[6][20] = {"PalRes", "Id", "Num", "SimEsp", "Cadena", "Error"};
+
 
 int main()
 {
@@ -120,9 +122,24 @@ int main()
                 {
                     identificarTooken(cadena);
                 }
+
                 break;
             //En caso de no corresponder a nunguna opcion podemos asumir que se trata
             //de un simEsp simple
+            case '"':
+                if(cadena[0] == '\0')
+                {
+                    insertar(crearToken("\"", SimEsp, "\"", 0));
+                    auxCadena = true;
+                }
+                else if (cadena[0] != '\0')
+                {
+                    insertar(crearToken(cadena, Cadena, cadena, 0));
+                    insertar(crearToken("\"", SimEsp, "\"", 0));
+                    strcpy(cadena,  "");
+                    auxCadena = false;
+                }
+                break;
             default:
                 if(caracterAnterior != '\0')
                 {
@@ -188,7 +205,8 @@ void insertar(struct Token token)
 
     if(raiz == NULL)
         raiz=nuevo;
-    else{
+    else
+    {
         while(nAux->siguiente != NULL)
             nAux = nAux->siguiente;
 
@@ -207,11 +225,15 @@ void imprimirPre(struct nodo *reco)
             Color(0,15);
 
         printf("  %s", reco->token.nombre);
-        for(int i = strlen(reco->token.nombre); i < 22; i++){ printf(" "); }
+        for(int i = strlen(reco->token.nombre); i < 22; i++)
+        {
+            printf(" ");
+        }
         printf("%s", tipoToken[reco->token.tipo]);
         for(int i = strlen(tipoToken[reco->token.tipo]); i < 16; i++){ printf(" "); }
         printf("%s", reco->token.lexema);
         for(int i = strlen(reco->token.lexema); i < 16; i++){ printf(" "); }
+
         printf("%d\n", reco->token.valor);
         reco = reco->siguiente;
     }
@@ -227,8 +249,9 @@ void borrar(struct nodo *reco)
     }
 }
 
-void Color(int Background, int Text){ // Función para cambiar el color del fondo y/o pantalla
-	HANDLE Console = GetStdHandle(STD_OUTPUT_HANDLE); // Tomamos la consola.
-	int New_Color= Text + (Background * 16); // Pero, para convertir los colores a un valor adecuado, se realiza el siguiente cálculo.
-	SetConsoleTextAttribute(Console, New_Color); // Guardamos los cambios en la Consola.
+void Color(int Background, int Text)  // Función para cambiar el color del fondo y/o pantalla
+{
+    HANDLE Console = GetStdHandle(STD_OUTPUT_HANDLE); // Tomamos la consola.
+    int New_Color= Text + (Background * 16); // Pero, para convertir los colores a un valor adecuado, se realiza el siguiente cálculo.
+    SetConsoleTextAttribute(Console, New_Color); // Guardamos los cambios en la Consola.
 }

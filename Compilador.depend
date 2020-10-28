@@ -10,7 +10,7 @@
 
 1603667410 c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\listaenlazada.h
 
-1603829498 source:c:\users\josea\documents\github\compilador\main.c
+1603915388 source:c:\users\josea\documents\github\compilador\main.c
 	<stdio.h>
 	<conio.h>
 	<stdlib.h>
@@ -18,6 +18,10 @@
 	<stdbool.h>
 	<ctype.h>
 	<Windows.h>
+	"EstructuraToken.h"
+	"PalabraReservada.h"
+	"Identificador.h"
+	"Numeros.h"
 
 1603915703 c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\palabrareservada.h
 
@@ -61,4 +65,30 @@
 
 1603915832 c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\main.h
 	"EstructuraToken.h"
+
+1603878157 source:c:\users\josea\documents\github\compilador\identificador.c
+	<stdbool.h>
+	<ctype.h>
+	<string.h>
+	<stdlib.h>
+	"Identificador.h"
+
+1603878157 c:\users\josea\documents\github\compilador\identificador.h
+
+1603878157 c:\users\josea\documents\github\compilador\estructuratoken.h
+
+1603865615 c:\users\josea\documents\github\compilador\palabrareservada.h
+
+1603878157 c:\users\josea\documents\github\compilador\numeros.h
+
+1603878157 source:c:\users\josea\documents\github\compilador\numeros.c
+	<ctype.h>
+	<stdlib.h>
+	<string.h>
+	"Numeros.h"
+
+1603878157 source:c:\users\josea\documents\github\compilador\palabrareservada.c
+	<stdbool.h>
+	<string.h>
+	"PalabraReservada.h"
 
