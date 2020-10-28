@@ -31,6 +31,19 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="EstructuraToken.h" />
+		<Unit filename="Identificador.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Identificador.h" />
+		<Unit filename="Numeros.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Numeros.h" />
+		<Unit filename="PalabraReservada.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="PalabraReservada.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
