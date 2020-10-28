@@ -1,12 +1,14 @@
-#include<stdio.h>
-#include<conio.h>
-#include<stdlib.h>
-#include<string.h>
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
 #include <Windows.h>
 
-#define numPalRes 22
+#include "PalabraReservada.h"
+#include "Identificador.h"
+
 #define numSimEspecial 20
 
 struct nodo
@@ -18,33 +20,20 @@ struct nodo
     struct nodo *siguiente;
     struct nodo *anterior;
 };
+
 //Variables
 struct nodo *raiz = NULL;
 char Token[] = "\0";
 char caracterAnterior;
 
-char palRes[numPalRes][10] = {"inicio", "fin", "var", "const", "si", "entonces", "iniciosi", "finsi",
-                              "sino", "iniciosino", "finsino", "para", "iniciopara", "finpara", "escribir", "leer",
-                              "entero", "real", "booleano", "cadena"
-                             };
-
-char simEspecial[numSimEspecial][3] = { "+", "-", "*", "/", "<", ">", "=", "&", "|", ";", ":", "(", ")",
-                                       ">=", "<=", "!=", ":=" };
+char simEspecial[numSimEspecial][3] = { "+", "-", "*", "/", "<", ">", "=", "&", "|", ";", ":", "(", ")", ">=", "<=", "!=", ":=" };
 
 //Funciones
-bool identidacadorPalRes(char data[]);
-bool identidacadorIdentificador(char data[]);
+void identificarToken();
 void insertar(char  nombre[], char tipo[], char lexema[]);
 void imprimirPre(struct nodo *reco);
 void borrar(struct nodo *reco);
-
-void Color(int Background, int Text){ // Función para cambiar el color del fondo y/o pantalla
-	HANDLE Console = GetStdHandle(STD_OUTPUT_HANDLE); // Tomamos la consola.
-	// Para cambiar el color, se utilizan números desde el 0 hasta el 255.
-	// Pero, para convertir los colores a un valor adecuado, se realiza el siguiente cálculo.
-	int New_Color= Text + (Background * 16);
-	SetConsoleTextAttribute(Console, New_Color); // Guardamos los cambios en la Consola.
-}
+void Color(int Background, int Text);
 
 int main()
 {
@@ -74,9 +63,7 @@ int main()
                 if (caracterAnterior == '\0')
                 {
                     caracterAnterior = aux[0];//Respaldamos el caracter leido
-                    if(strcmp(Token, "\0") != 0)
-                        if(!identidacadorPalRes(Token))
-                            identidacadorIdentificador(Token);
+                    identificarToken();
 
                     simboloRaro = false;
                 }
@@ -86,9 +73,7 @@ int main()
                 if (caracterAnterior == '\0')
                 {
                     caracterAnterior = aux[0];//Respaldamos el caracter leido
-                    if(strcmp(Token, "\0") != 0)
-                        if(!identidacadorPalRes(Token))
-                            identidacadorIdentificador(Token);
+                    identificarToken();
 
                     simboloRaro = false;
                 }
@@ -98,9 +83,7 @@ int main()
                 if (caracterAnterior == '\0')
                 {
                     caracterAnterior = aux[0];//Respaldamos el caracter leido
-                    if(strcmp(Token, "\0") != 0)
-                        if(!identidacadorPalRes(Token))
-                            identidacadorIdentificador(Token);
+                    identificarToken();
 
                     simboloRaro = false;
                 }
@@ -110,17 +93,13 @@ int main()
                 if (caracterAnterior == '\0')
                 {
                     caracterAnterior = aux[0];//Respaldamos el caracter leido
-                    if(strcmp(Token, "\0") != 0)
-                        if(!identidacadorPalRes(Token))
-                            identidacadorIdentificador(Token);
+                    identificarToken();
 
                     simboloRaro = false;
                 }
                 break;
             case '=':
-                if(strcmp(Token, "\0") != 0)
-                    if(!identidacadorPalRes(Token))
-                        identidacadorIdentificador(Token);
+                identificarToken();
 
                 if (caracterAnterior == ':')
                 {
@@ -154,9 +133,8 @@ int main()
             case '\n':
             case '\t':
             case ' ':
-                if(strcmp(Token, "\0") != 0)
-                    if(!identidacadorPalRes(Token))
-                        identidacadorIdentificador(Token);
+                identificarToken();
+
                 break;
             //En caso de no corresponder a nunguna opcion podemos asumir que se trata
             //de un simEsp simple
@@ -177,12 +155,8 @@ int main()
                     if(strcmp(aux, simEspecial[i]) == 0)
                     {
                         //Al encontrar un ocurrencia insertamos el nodo y rompemos el ciclo
-                        if(strcmp(Token, "\0") != 0)
-                            if(!identidacadorPalRes(Token))
-                                identidacadorIdentificador(Token);
-                        //if(!identidacadorIdentificador(Token));
+                        identificarToken();
 
-                        //numeros(Token);
                         insertar(aux, "simEsp", aux);
                         simboloRaro = false;
                         break;
@@ -203,90 +177,40 @@ int main()
         }
     }
 
-    fclose(archivo);
+    //al terminar de leer el docuemnto puede que token tenga un valor guardado
+    identificarToken();
 
+    fclose(archivo);
     printf("  Nombre\t\tTipo\t\tLexema\n\n");
     imprimirPre(raiz);
-
     borrar(raiz);
     getch();
     return 0;
 }
 
-bool identidacadorPalRes(char data[])
-{
-    for(int i = 0; i < numPalRes; i++)
+/* Sirve para no repetir el mismo fracmento de codigo
+ * ademas de que lo vuelve versatil a los cambios*/
+void identificarToken(){
+    if(strcmp(Token, "\0") != 0)
     {
-        if(strcmp(data, palRes[i]) == 0)
-        {
-            insertar(data, "PalRes", data);
-            strcpy(Token,  ""); //limpiamos la variable
-            return true;
-        }
-    }
-    return false;
-}
-
-void numeros(char data[])
-{
-
-    if(atoi(data) || atof(data))
-    {
-        insertar(data, "NUM", data);
-        strcpy(Token,  ""); //limpiamos la variable
-    }
-}
-
-bool identidacadorIdentificador(char data[])
-{
-    bool valido = true;
-    int i = 0;
-
-    if(isalpha(data[0]) || data[0] == '_' )
-    {
-        while(data[i])
-        {
-            if(isalnum(data[i]) || data[i] == '_')
-            {
-                valido = true;
+        if(identidacadorPalRes(Token))
+        {//La cadena analizada es una palRes
+            insertar(Token, "PalRes", Token);
+            strcpy(Token,  "");
+        }else{
+            if(numeros(Token))
+            {//La cadena analizada es un numero
+                insertar(Token, "Num", Token);
+                strcpy(Token,  "");
+            }else{
+                if(identidacadorIdentificador(Token))
+                {
+                    insertar(Token, "Id", Token);
+                    strcpy(Token,  "");
+                }
             }
-            else
-            {
-                valido = false;
-                insertar(data, "Error", "Cadena invalida");
-                strcpy(Token,  ""); //limpiamos la variable
-                break;
-            }
-            i++;
         }
     }
-    else if (isdigit(data[0]))
-    {
-        if(isdigit(data[1]) || data[1] == '.')
-        {
-            numeros(data);
-            valido = false;
-        }
-        else if(isdigit(data[0]) && isalpha(data[1]) == false){
-             numeros(data);
-            valido = false;
-        }
-        else if(isalpha(data[1]))
-        {
-            valido = false;
-            insertar(data, "Error", "Cadena invalida");
-            strcpy(Token,  ""); //limpiamos la variable
-        }
-    }
-
-    if(valido)
-    {
-        insertar(data, "Id", data);
-        strcpy(Token,  ""); //limpiamos la variable
-        return true;
-    }
-
-    return false;
 }
 
 void insertar(char  nombre[], char tipo[], char lexema[])
@@ -357,4 +281,10 @@ void borrar(struct nodo *reco)
         borrar(reco->siguiente);
         free(reco);
     }
+}
+
+void Color(int Background, int Text){ // Función para cambiar el color del fondo y/o pantalla
+	HANDLE Console = GetStdHandle(STD_OUTPUT_HANDLE); // Tomamos la consola.
+	int New_Color= Text + (Background * 16); // Pero, para convertir los colores a un valor adecuado, se realiza el siguiente cálculo.
+	SetConsoleTextAttribute(Console, New_Color); // Guardamos los cambios en la Consola.
 }

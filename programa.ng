@@ -1,12 +1,8 @@
 var
-    entero: vabsd+*fsdfsdfle_1 := 22.22; 3232; 123;
-    entero:1d;
+    entero: variable_1 := 3;
+    entero:d;
 const
 inicio
-    variable<;
-    <=>=!==
+    variable := 2123.11231;
     escribir();
-si (5<10) entonces
-131231;
-123131.23;
 fin

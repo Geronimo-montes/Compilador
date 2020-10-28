@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1603825899 source:c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\main.c
+1603860600 source:c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\main.c
 	<stdio.h>
 	<conio.h>
 	<stdlib.h>
@@ -7,6 +7,8 @@
 	<stdbool.h>
 	<ctype.h>
 	<Windows.h>
+	"PalabraReservada.h"
+	"Identificador.h"
 
 1603667228 source:c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\listaenlazada.c
 	<stdio.h>
@@ -24,4 +26,13 @@
 	<stdbool.h>
 	<ctype.h>
 	<Windows.h>
+
+1603858024 c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\palabrareservada.h
+
+1603859129 source:c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\palabrareservada.c
+	<stdbool.h>
+	<string.h>
+	"PalabraReservada.h"
+
+1603860136 c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\identificador.h
 
