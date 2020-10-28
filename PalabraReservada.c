@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <string.h>
+
 #include "PalabraReservada.h"
 #define numPalRes 22
 

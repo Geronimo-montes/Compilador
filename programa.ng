@@ -3,6 +3,6 @@ var
     entero:d;
 const
 inicio
-    variable := 2123.11231;
+    variable := 212asd3.11231;
     escribir();
 fin

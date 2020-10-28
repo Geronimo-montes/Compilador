@@ -6,38 +6,30 @@
 #include <ctype.h>
 #include <Windows.h>
 
+#include "EstructuraToken.h"
 #include "PalabraReservada.h"
 #include "Identificador.h"
+#include "Numeros.h"
 
 #define numSimEspecial 20
 
-struct nodo
-{
-    char nombre[30];
-    char tipo[30];
-    char lexema[30];
-
-    struct nodo *siguiente;
-    struct nodo *anterior;
-};
-
 //Variables
 struct nodo *raiz = NULL;
-char Token[] = "\0";
+char cadena[] = "";
 char caracterAnterior;
 
 char simEspecial[numSimEspecial][3] = { "+", "-", "*", "/", "<", ">", "=", "&", "|", ";", ":", "(", ")", ">=", "<=", "!=", ":=" };
 
 //Funciones
-void identificarToken();
-void insertar(char  nombre[], char tipo[], char lexema[]);
+struct Token crearToken(char nombre[], enum TipoToken tipo, char lexema[], int valor);
+void identificarTooken();
+void insertar(struct Token token);
 void imprimirPre(struct nodo *reco);
 void borrar(struct nodo *reco);
 void Color(int Background, int Text);
 
 int main()
 {
-    //insertar("nombre_1", "tipo_1", "lexema_1");
     FILE *archivo;
     char caracter;
     archivo = fopen("programa.ng","r");
@@ -63,8 +55,7 @@ int main()
                 if (caracterAnterior == '\0')
                 {
                     caracterAnterior = aux[0];//Respaldamos el caracter leido
-                    identificarToken();
-
+                    identificarTooken();
                     simboloRaro = false;
                 }
                 break;
@@ -73,8 +64,7 @@ int main()
                 if (caracterAnterior == '\0')
                 {
                     caracterAnterior = aux[0];//Respaldamos el caracter leido
-                    identificarToken();
-
+                    identificarTooken();
                     simboloRaro = false;
                 }
                 break;
@@ -83,8 +73,7 @@ int main()
                 if (caracterAnterior == '\0')
                 {
                     caracterAnterior = aux[0];//Respaldamos el caracter leido
-                    identificarToken();
-
+                    identificarTooken();
                     simboloRaro = false;
                 }
                 break;
@@ -93,48 +82,46 @@ int main()
                 if (caracterAnterior == '\0')
                 {
                     caracterAnterior = aux[0];//Respaldamos el caracter leido
-                    identificarToken();
-
+                    identificarTooken();
                     simboloRaro = false;
                 }
                 break;
             case '=':
-                identificarToken();
+                identificarTooken();
 
                 if (caracterAnterior == ':')
                 {
-                    insertar(":=", "SimEsp", ":=");
+                    insertar(crearToken(":=", SimEsp, ":=", 0));
                     caracterAnterior = '\0';
                 }
                 else if(caracterAnterior == '!')
                 {
-                    insertar("!=", "SimEsp", "!=");
+                    insertar(crearToken("!=", SimEsp, "!=", 0));
                     caracterAnterior = '\0';
                 }
                 else if(caracterAnterior == '>')
                 {
-                    insertar(">=", "SimEsp", ">=");
+                    insertar(crearToken(">=", SimEsp, ">=", 0));
                     caracterAnterior = '\0';
                 }
                 else if(caracterAnterior == '<')
                 {
-                    insertar("<=", "SimEsp", "<=");
+                    insertar(crearToken("<=", SimEsp, "<=", 0));
                     caracterAnterior = '\0';
                 }
                 else
                 {
-                    insertar("=", "SimEsp", "=");
+                    insertar(crearToken("=", SimEsp, "=", 0));
                 }
 
                 simboloRaro = false;
                 break;
             //Saltos de linea, tabulaciones y espacions son idicadores de insertar el
-            //contenido de Token
+            //contenido de cadena
             case '\n':
             case '\t':
             case ' ':
-                identificarToken();
-
+                identificarTooken();
                 break;
             //En caso de no corresponder a nunguna opcion podemos asumir que se trata
             //de un simEsp simple
@@ -145,7 +132,7 @@ int main()
                     if(caracterAnterior != '!')
                     {
                         //el signo de exclamacion no es utilizado individualmente por lo que se descarta
-                        insertar(&caracterAnterior, "SimEsp", &caracterAnterior);
+                        insertar(crearToken(&caracterAnterior, SimEsp, &caracterAnterior, 0));
                     }
                     caracterAnterior = '\0';
                 }
@@ -155,9 +142,8 @@ int main()
                     if(strcmp(aux, simEspecial[i]) == 0)
                     {
                         //Al encontrar un ocurrencia insertamos el nodo y rompemos el ciclo
-                        identificarToken();
-
-                        insertar(aux, "simEsp", aux);
+                        identificarTooken();
+                        insertar(crearToken(aux, SimEsp, aux, 0));
                         simboloRaro = false;
                         break;
                     }
@@ -170,64 +156,85 @@ int main()
             {
                 if(isalpha(simbolo) || isdigit(simbolo) || simbolo == '_' || simbolo == '.' || simboloRaro)
                 {
-                    strncat(Token, aux,1);//Concatenamos
-
+                    strncat(cadena, aux,1);//Concatenamos
                 }
             }
         }
     }
 
     //al terminar de leer el docuemnto puede que token tenga un valor guardado
-    identificarToken();
+    identificarTooken();
 
     fclose(archivo);
-    printf("  Nombre\t\tTipo\t\tLexema\n\n");
+    printf("  Nombre\t\tTipo\t\tLexema\t\tValor\n\n");
     imprimirPre(raiz);
     borrar(raiz);
     getch();
     return 0;
 }
 
+
+struct Token crearToken(char nombre[], enum TipoToken tipo, char lexema[], int valor){
+    struct Token *nuevoToken = NULL;
+    nuevoToken = malloc(sizeof(struct Token));
+
+    strcpy(nuevoToken->nombre, nombre);
+    nuevoToken->tipo = tipo;
+    strcpy(nuevoToken->lexema, lexema);
+    nuevoToken->valor = valor;
+
+    return *nuevoToken;
+}
+
 /* Sirve para no repetir el mismo fracmento de codigo
  * ademas de que lo vuelve versatil a los cambios*/
-void identificarToken(){
-    if(strcmp(Token, "\0") != 0)
+void identificarTooken(){
+    if(strcmp(cadena, "\0") != 0)
     {
-        if(identidacadorPalRes(Token))
+        if(identidacadorPalRes(cadena))
         {//La cadena analizada es una palRes
-            insertar(Token, "PalRes", Token);
-            strcpy(Token,  "");
+            insertar(crearToken(cadena, PalRes, cadena, 0));
+            strcpy(cadena,  "");
         }else{
-            if(numeros(Token))
-            {//La cadena analizada es un numero
-                insertar(Token, "Num", Token);
-                strcpy(Token,  "");
-            }else{
-                if(identidacadorIdentificador(Token))
-                {
-                    insertar(Token, "Id", Token);
-                    strcpy(Token,  "");
+            switch (numeros(cadena))
+            {
+            case 1://Numero Valido
+                insertar(crearToken(cadena, Num, cadena, atoi(cadena)));
+                strcpy(cadena,  "");
+                break;
+
+            case 2://Error lexico
+                insertar(crearToken(cadena, Error, "Error Lexico. Numero no Valido.", atoi(cadena)));
+                strcpy(cadena,  "");
+                break;
+
+            case 3:
+                if(identidacadorIdentificador(cadena))
+                {//La cadena es un identificador valido
+                    insertar(crearToken(cadena, Id, cadena, 0));
+                    strcpy(cadena,  "");
+                }else{//Error lexico en el identidicador
+                    insertar(crearToken(cadena, Error, "Error Lexico. Identidicador no Valido.", 0));
+                    strcpy(cadena,  "");
                 }
+                break;
             }
         }
     }
 }
 
-void insertar(char  nombre[], char tipo[], char lexema[])
+void insertar(struct Token token)
 {
     struct nodo *nuevo = NULL, *nAux = raiz;
     nuevo = malloc(sizeof(struct nodo));
 
-    strcpy(nuevo->nombre, nombre);
-    strcpy(nuevo->tipo, tipo);
-    strcpy(nuevo->lexema, lexema);
+    nuevo->token = token;
     nuevo->anterior = NULL;
     nuevo->siguiente = NULL;
 
     if(raiz == NULL)
         raiz=nuevo;
-    else
-    {
+    else{
         while(nAux->siguiente != NULL)
             nAux = nAux->siguiente;
 
@@ -240,36 +247,19 @@ void imprimirPre(struct nodo *reco)
 {
     while (reco != NULL)
     {
-        if(strcmp(reco->tipo, "Error") == 0)
-        {
+        if(reco->token.tipo == 5)
             Color(0,4);
-            printf("  %s",reco->nombre);
-            for(int i = strlen(reco->nombre); i < 22; i++)
-            {
-                printf(" ");
-            }
-            printf("%s",reco->tipo);
-            for(int i = strlen(reco->tipo); i < 14; i++)
-            {
-                printf(" ");
-            }
-            printf("%s\n",reco->lexema);
-            reco = reco->siguiente;
-        }else{
+        else
             Color(0,15);
-            printf("  %s",reco->nombre);
-            for(int i = strlen(reco->nombre); i < 22; i++)
-            {
-                printf(" ");
-            }
-            printf("%s",reco->tipo);
-            for(int i = strlen(reco->tipo); i < 14; i++)
-            {
-                printf(" ");
-            }
-            printf("%s\n",reco->lexema);
-            reco = reco->siguiente;
-        }
+
+        printf("  %s", reco->token.nombre);
+        for(int i = strlen(reco->token.nombre); i < 22; i++){ printf(" "); }
+        printf("%s", tipoToken[reco->token.tipo]);
+        for(int i = strlen(tipoToken[reco->token.tipo]); i < 14; i++){ printf(" "); }
+        printf("%s", reco->token.lexema);
+        for(int i = strlen(reco->token.lexema); i < 14; i++){ printf(" "); }
+        printf("%d\n", reco->token.valor);
+        reco = reco->siguiente;
     }
 }
 

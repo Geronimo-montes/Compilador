@@ -1,14 +1,6 @@
 # depslib dependency file v1.0
-1603860600 source:c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\main.c
-	<stdio.h>
-	<conio.h>
-	<stdlib.h>
-	<string.h>
-	<stdbool.h>
-	<ctype.h>
-	<Windows.h>
-	"PalabraReservada.h"
-	"Identificador.h"
+1603877359 source:c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\main.c
+	"EstructuraToken.h"
 
 1603667228 source:c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\listaenlazada.c
 	<stdio.h>
@@ -27,12 +19,35 @@
 	<ctype.h>
 	<Windows.h>
 
-1603858024 c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\palabrareservada.h
-
-1603859129 source:c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\palabrareservada.c
+1603877697 c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\palabrareservada.h
 	<stdbool.h>
-	<string.h>
+
+1603877352 source:c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\palabrareservada.c
 	"PalabraReservada.h"
 
-1603860136 c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\identificador.h
+1603877690 c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\identificador.h
+	<stdbool.h>
+
+1603877342 source:c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\identificador.c
+	"Identificador.h"
+
+1603877491 c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\numeros.h
+
+1603877304 source:c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\numeros.c
+	"Numeros.h"
+
+1603877593 c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\estructuratoken.h
+	<stdbool.h>
+	<string.h>
+	<ctype.h>
+	<stdlib.h>
+	<stdio.h>
+	<conio.h>
+	<Windows.h>
+	"PalabraReservada.h"
+	"Identificador.h"
+	"Numeros.h"
+
+1603876825 source:c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\estructuratoken.c
+	"EstructuraToken.h"
 
