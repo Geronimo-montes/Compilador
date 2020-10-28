@@ -6,4 +6,7 @@ inicio
     variable<;
     <=>=!==
     escribir();
+si (5<10) entonces
+131231;
+123131.23;
 fin

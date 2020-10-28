@@ -16,11 +16,12 @@
 
 1603667410 c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\listaenlazada.h
 
-1603795684 source:c:\users\josea\documents\github\compilador\main.c
+1603829498 source:c:\users\josea\documents\github\compilador\main.c
 	<stdio.h>
 	<conio.h>
 	<stdlib.h>
 	<string.h>
 	<stdbool.h>
 	<ctype.h>
+	<Windows.h>
 

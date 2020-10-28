@@ -267,6 +267,10 @@ bool identidacadorIdentificador(char data[])
             numeros(data);
             valido = false;
         }
+        else if(isdigit(data[0]) && isalpha(data[1]) == false){
+             numeros(data);
+            valido = false;
+        }
         else if(isalpha(data[1]))
         {
             valido = false;
