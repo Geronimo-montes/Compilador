@@ -1,3 +1,16 @@
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
+#include <Windows.h>
+
+#include "EstructuraToken.h"
+#include "PalabraReservada.h"
+#include "Identificador.h"
+#include "Numeros.h"
+
 #define numSimEspecial 20
 
 //Variables
@@ -109,7 +122,7 @@ int main()
                 {
                     insertar(crearToken(cadena, Cadena, cadena, 0));
                     insertar(crearToken("\"", SimEsp, "\"", 0));
-                    strcpy(cadena,  "");    
+                    strcpy(cadena,  "");
                     auxCadena = false;
                 }
                 break;

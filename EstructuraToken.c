@@ -4,7 +4,7 @@
 #include "Identificador.h"
 #include "Numeros.h"
 
-struct Token crearToken(char nombre[], enum TipoToken tipo, char lexema[], int valor){
+struct Token crearToken(char nombre[], enum TipoToken tipo, char lexema[], double valor){
     struct Token *nuevoToken = NULL;
     nuevoToken = malloc(sizeof(struct Token));
 
@@ -29,12 +29,12 @@ void identificarTooken(char cadena[]){
             switch (numeros(cadena))
             {
             case 1://Numero Valido
-                insertar(crearToken(cadena, Num, cadena, atoi(cadena)));
+                insertar(crearToken(cadena, Num, cadena, atof(cadena)));
                 strcpy(cadena,  "");
                 break;
 
             case 2://Error lexico
-                insertar(crearToken(cadena, Error, "Error Lexico. Numero no Valido.", atoi(cadena)));
+                insertar(crearToken(cadena, Error, "Error Lexico. Numero no Valido.", atof(cadena)));
                 strcpy(cadena,  "");
                 break;
 

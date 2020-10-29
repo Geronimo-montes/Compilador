@@ -29,7 +29,7 @@
         char nombre[80];
         enum TipoToken tipo;
         char lexema[80];
-        int valor;
+        double valor;
     };
 
     struct nodo
@@ -39,7 +39,7 @@
         struct nodo *anterior;
     };
 
-    struct Token crearToken(char nombre[], enum TipoToken tipo, char lexema[], int valor);
+    struct Token crearToken(char nombre[], enum TipoToken tipo, char lexema[], double valor);
 
     void identificarTooken(char cadena[]);
 
