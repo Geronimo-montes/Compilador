@@ -16,7 +16,7 @@ struct Token{
     char nombre[80];
     enum TipoToken tipo;
     char lexema[80];
-    int valor;
+    double valor;
 };
 
 struct nodo

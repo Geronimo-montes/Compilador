@@ -21,7 +21,7 @@ bool auxCadena;
 char simEspecial[numSimEspecial][3] = { "+", "-", "*", "/", "<", ">", "=", "&", "|", ";", ":", "(", ")", ">=", "<=", "!=", ":=","\"" };
 
 //Funciones
-struct Token crearToken(char nombre[], enum TipoToken tipo, char lexema[], int valor);
+struct Token crearToken(char nombre[], enum TipoToken tipo, char lexema[], double valor);
 void identificarTooken();
 void insertar(struct Token token);
 void imprimirPre(struct nodo *reco);
@@ -198,7 +198,7 @@ int main()
 }
 
 
-struct Token crearToken(char nombre[], enum TipoToken tipo, char lexema[], int valor)
+struct Token crearToken(char nombre[], enum TipoToken tipo, char lexema[], double valor)
 {
     struct Token *nuevoToken = NULL;
     nuevoToken = malloc(sizeof(struct Token));
@@ -231,12 +231,12 @@ void identificarTooken()
             switch (numeros(cadena))
             {
             case 1://Numero Valido
-                insertar(crearToken(cadena, Num, cadena, atoi(cadena)));
+                insertar(crearToken(cadena, Num, cadena, atof(cadena)));
                 strcpy(cadena,  "");
                 break;
 
             case 2://Error lexico
-                insertar(crearToken(cadena, Error, "Error Lexico. Numero no Valido.", atoi(cadena)));
+                insertar(crearToken(cadena, Error, "Error Lexico. Numero no Valido.", atof(cadena)));
                 strcpy(cadena,  "");
                 break;
 
@@ -305,7 +305,7 @@ void imprimirPre(struct nodo *reco)
         {
             printf(" ");
         }
-        printf("%d\n", reco->token.valor);
+        printf("%.2f\n", reco->token.valor);
         reco = reco->siguiente;
     }
 }

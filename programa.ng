@@ -1,9 +1,9 @@
 var
-    entero: variable_1 := "1";
-    entero:222d;
+    entero: variable_1 := 3;
+    entero:d;
 const
 inicio
-    variable := 212asd3.11231;
-    escribir("equipo prieto");
-"gero";
+    variable := 222.2;
+    escribir("hola mundo");
+
 fin
