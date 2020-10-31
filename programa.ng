@@ -3,6 +3,7 @@ var
     entero:d%;
 const
 inicio
-    variable := 21.2;
+    variable := -21.2;
+20;
     escribir("hola mundo");
 fin
