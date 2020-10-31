@@ -30,6 +30,9 @@ int numeros(char data[])
                     }
                     punto = 2;
 
+                } else if(data[i] == '-'){
+                 estado = 2;
+                        break;
                 }
             }
         }
@@ -51,6 +54,9 @@ int numeros(char data[])
                     }
                     punto = 2;
 
+                }else if(data[i] == '-'){
+                 estado = 2;
+                        break;
                 }
             }
         }
