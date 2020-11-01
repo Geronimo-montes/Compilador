@@ -20,7 +20,7 @@ char caracterAnterior;
 
 bool auxCadena; //Indica el inicio / fin de una constante tipo string
 
-char simEspecial[numSimEspecial][3] = { "+", "*", "/", "<", ">", "=", "&", "|", ";", ":", "(", ")", ">=", "<=", "!=", ":=" };
+char simEspecial[numSimEspecial][3] = { "+", "-", "*", "/", "<", ">", "=", "&", "|", ";", ":", "(", ")", ">=", "<=", "!=", ":=" };
 char tipoToken[6][20] = {"PalRes", "Id", "Num", "SimEsp", "Cadena", "Error"};
 
 
@@ -168,7 +168,7 @@ int main()
 
             if(simbolo != ' ' && simbolo != '\n' && simbolo != '\t' && simbolo != '"' && auxCadena == false)
             {
-                if(isalpha(simbolo) || isdigit(simbolo) || simbolo == '_' || simbolo == '.' || simboloRaro || simbolo == '-')
+                if(isalpha(simbolo) || isdigit(simbolo) || simbolo == '_' || simbolo == '.' || simboloRaro)
                 {
                     strncat(cadena, aux,1);//Concatenamos
                 }

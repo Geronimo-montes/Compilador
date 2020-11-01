@@ -10,7 +10,7 @@
 
 1603667410 c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\listaenlazada.h
 
-1604187807 source:c:\users\josea\documents\github\compilador\main.c
+1604113614 source:c:\users\josea\documents\github\compilador\main.c
 	<stdio.h>
 	<conio.h>
 	<stdlib.h>
@@ -66,16 +66,16 @@
 1603915832 c:\users\geronimo\desktop\12_software de sistemas\01. programas\compilador\main.h
 	"EstructuraToken.h"
 
-1603878157 source:c:\users\josea\documents\github\compilador\identificador.c
+1603877913 source:c:\users\josea\documents\github\compilador\identificador.c
 	<stdbool.h>
 	<ctype.h>
 	<string.h>
 	<stdlib.h>
 	"Identificador.h"
 
-1603942629 c:\users\josea\documents\github\compilador\identificador.h
+1603915818 c:\users\josea\documents\github\compilador\identificador.h
 
-1604000787 c:\users\josea\documents\github\compilador\estructuratoken.h
+1604113614 c:\users\josea\documents\github\compilador\estructuratoken.h
 	<string.h>
 	<conio.h>
 	<stdlib.h>
@@ -84,28 +84,84 @@
 	<ctype.h>
 	<Windows.h>
 
-1603942629 c:\users\josea\documents\github\compilador\palabrareservada.h
+1603915703 c:\users\josea\documents\github\compilador\palabrareservada.h
 
-1603942629 c:\users\josea\documents\github\compilador\numeros.h
+1603915822 c:\users\josea\documents\github\compilador\numeros.h
 
-1604188311 source:c:\users\josea\documents\github\compilador\numeros.c
+1604113614 source:c:\users\josea\documents\github\compilador\numeros.c
 	<ctype.h>
 	<stdlib.h>
 	<string.h>
 	"Numeros.h"
 
-1603878157 source:c:\users\josea\documents\github\compilador\palabrareservada.c
+1603915969 source:c:\users\josea\documents\github\compilador\palabrareservada.c
 	<stdbool.h>
 	<string.h>
 	"PalabraReservada.h"
 
-1604000787 source:c:\users\josea\documents\github\compilador\estructuratoken.c
+1604113614 source:c:\users\josea\documents\github\compilador\estructuratoken.c
 	"EstructuraToken.h"
 	"main.h"
 	"PalabraReservada.h"
 	"Identificador.h"
 	"Numeros.h"
 
-1603942629 c:\users\josea\documents\github\compilador\main.h
+1603915832 c:\users\josea\documents\github\compilador\main.h
 	"EstructuraToken.h"
+
+1604113614 source:c:\users\josea\desktop\compilador\estructuratoken.c
+	"EstructuraToken.h"
+	"main.h"
+	"PalabraReservada.h"
+	"Identificador.h"
+	"Numeros.h"
+
+1604113614 c:\users\josea\desktop\compilador\estructuratoken.h
+	<string.h>
+	<conio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<stdio.h>
+	<ctype.h>
+	<Windows.h>
+
+1603915832 c:\users\josea\desktop\compilador\main.h
+	"EstructuraToken.h"
+
+1603915703 c:\users\josea\desktop\compilador\palabrareservada.h
+
+1603915818 c:\users\josea\desktop\compilador\identificador.h
+
+1603915822 c:\users\josea\desktop\compilador\numeros.h
+
+1603877913 source:c:\users\josea\desktop\compilador\identificador.c
+	<stdbool.h>
+	<ctype.h>
+	<string.h>
+	<stdlib.h>
+	"Identificador.h"
+
+1604113614 source:c:\users\josea\desktop\compilador\main.c
+	<stdio.h>
+	<conio.h>
+	<stdlib.h>
+	<string.h>
+	<stdbool.h>
+	<ctype.h>
+	<Windows.h>
+	"EstructuraToken.h"
+	"PalabraReservada.h"
+	"Identificador.h"
+	"Numeros.h"
+
+1604113614 source:c:\users\josea\desktop\compilador\numeros.c
+	<ctype.h>
+	<stdlib.h>
+	<string.h>
+	"Numeros.h"
+
+1603915969 source:c:\users\josea\desktop\compilador\palabrareservada.c
+	<stdbool.h>
+	<string.h>
+	"PalabraReservada.h"
 
